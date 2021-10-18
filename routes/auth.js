@@ -21,6 +21,22 @@ router.post("/register", async (req, res) => {
     res.status(500).json(error)
   }
 })
+
 //LOGIN
+router.post("/login", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username })
+    !user && res.status(400).json("Invalid Crendentials.")
+
+    const passwordIsValid = await bcrypt.compare(req.body.password, user.password)
+    !passwordIsValid && res.status(400).json("Invalid Crendentials.")
+
+    const { password, ...userInfo } = user._doc
+
+    res.status(200).json(userInfo)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+})
 
 module.exports = router
