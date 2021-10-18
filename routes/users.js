@@ -1,6 +1,7 @@
 const router = require("express").Router()
 const bcrypt = require("bcrypt")
 const User = require("../models/User")
+const Post = require("../models/Post")
 
 //Update User
 router.put("/:id", async (req, res) => {
@@ -26,6 +27,26 @@ router.put("/:id", async (req, res) => {
     res.status(401).json("you can only update your account.")
   }
 })
+
 //Delete User
+router.delete("/:id", async (req, res) => {
+  if (req.body.userId === req.params.id) {
+    try {
+      const user = await User.findById(req.params.id)
+      try {
+        await Post.deleteMany({ username: user.username })
+        await User.findByIdAndDelete(req.params.id)
+
+        res.status(200).json("User Deleted Successfully.")
+      } catch (error) {
+        res.status(500).json(error)
+      }
+    } catch (error) {
+      res.status(404).json("User not found.")
+    }
+  } else {
+    res.status(401).json("you can only delete your account.")
+  }
+})
 
 module.exports = router
