@@ -49,4 +49,15 @@ router.delete("/:id", async (req, res) => {
   }
 })
 
+//Get One User
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    const { password, ...userInfo } = user._doc
+    res.status(200).json(userInfo)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+})
+
 module.exports = router
