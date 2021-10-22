@@ -16,7 +16,8 @@ router.post("/register", async (req, res) => {
 
     const user = await newUser.save()
 
-    res.status(200).json(user)
+    const { password, ...userInfo } = user._doc
+    res.status(200).json(userInfo)
   } catch (error) {
     res.status(500).json(error)
   }
@@ -32,7 +33,6 @@ router.post("/login", async (req, res) => {
     !passwordIsValid && res.status(400).json("Invalid Crendentials.")
 
     const { password, ...userInfo } = user._doc
-
     res.status(200).json(userInfo)
   } catch (error) {
     res.status(500).json(error)
